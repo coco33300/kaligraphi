@@ -1,6 +1,7 @@
 <div class="kal-stepper-header-container">
   <ng-container *ngFor="let step of _steps; let i = index">
     <kal-step-header
+      role="tab"
       (click)="step.select()"
       (keydown)="_onKeydown($event)"
       [tabIndex]="_getFocusIndex() === i ? 0 : -1"

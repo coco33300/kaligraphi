@@ -1,6 +1,6 @@
-<kal-stepper [linear]="true" orientation="horizontal" (selectionChange)="selectionUpdated($event)" #stepper>
+<kal-stepper [linear]="false" orientation="horizontal" (selectionChange)="selectionUpdated($event)" #stepper>
 
-  <kal-step [stepControl]="firstFormGroup">
+  <kal-step >
 
     <ng-template kalStepLabel> First step</ng-template>
 

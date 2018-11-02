@@ -16,6 +16,7 @@ import { FocusableOption } from '@angular/cdk/a11y';
 import { takeUntil } from 'rxjs/operators';
 
 import { KalStepComponent } from './kal-step.component';
+import { END, ENTER, HOME, SPACE } from '@angular/cdk/keycodes';
 
 
 // bug in cdk, should provide this class ourselves
@@ -44,6 +45,7 @@ export class KalStepHeaderDirective implements FocusableOption {
 })
 export class KalStepperComponent extends CdkStepper implements AfterContentInit {
 
+
   @HostBinding('attr.role') role = 'tablist';
 
   /** Steps that the stepper holds. */
@@ -53,6 +55,7 @@ export class KalStepperComponent extends CdkStepper implements AfterContentInit 
   @ContentChildren(KalStepHeaderDirective)
   _stepHeader: QueryList<KalStepHeaderDirective>;
 
+
   @Input()
   @HostBinding('attr.aria-orientation')
   get orientation() {
@@ -61,6 +64,27 @@ export class KalStepperComponent extends CdkStepper implements AfterContentInit 
 
   set orientation(orientation: StepperOrientation) {
     this._orientation = orientation;
+  }
+
+
+  _onKeydown(event: KeyboardEvent): void {
+
+    const keyCode = event.keyCode;
+
+    if (this['_keyManager'].activeItemIndex != null && (keyCode === SPACE || keyCode === ENTER)) {
+      console.log('space or enter')
+      event.preventDefault();
+    } else if (keyCode === HOME) {
+      console.log('HOME')
+      this['_keyManager'].setFirstItemActive();
+    } else if (keyCode === END) {
+      console.log('END')
+      this['_keyManager'].setLastItemActive();
+    } else {
+      console.log('defaut');
+      this['_keyManager'].onKeydown(event);
+    }
+    super._onKeydown(event)
   }
 
   ngAfterContentInit(): void {
