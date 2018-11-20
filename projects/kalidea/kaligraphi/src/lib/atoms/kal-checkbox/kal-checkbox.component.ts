@@ -1,6 +1,8 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  Input,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -39,15 +41,30 @@ export class KalCheckboxComponent extends FormElementComponent<boolean> implemen
    */
   readonly containsLabel;
 
-  constructor(@Optional() formField: KalFormFieldComponent) {
+  constructor(@Optional() formField: KalFormFieldComponent,
+              private cdr: ChangeDetectorRef) {
     super();
     this.containsLabel = !formField;
+  }
+
+  /**
+   * Set the value of checkbox
+   */
+  @Input()
+  get value() {
+    return this.control.value;
+  }
+
+  set value(value) {
+    this.control.patchValue(value, {emitEvent: false});
+    this.cdr.markForCheck();
   }
 
   /**
    * @inheritDoc
    */
   writeValue(value) {
+    super.writeValue(value);
     this.control.patchValue(value, {emitEvent: false});
   }
 
