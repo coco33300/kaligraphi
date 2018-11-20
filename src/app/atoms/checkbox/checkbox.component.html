@@ -18,7 +18,7 @@
 
 <kal-checkbox
   label="Checkbox with input"
-  [value]="true"
+  [value]="checkboxValue"
   [disabled]="disabled"
   (valueChange)="setValue($event)">
 </kal-checkbox>
@@ -27,4 +27,10 @@
 
 <a (click)="toggleDisableStateByInput()">
   Toggle disabled state of the checkbox by using input
+</a>
+
+<br />
+
+<a (click)="changeCheckboxValue()">
+  Change checkbox value
 </a>

@@ -41,6 +41,8 @@ export class KalCheckboxComponent extends FormElementComponent<boolean> implemen
    */
   readonly containsLabel;
 
+  private checkboxValue = false;
+
   constructor(@Optional() formField: KalFormFieldComponent,
               private cdr: ChangeDetectorRef) {
     super();
@@ -52,11 +54,15 @@ export class KalCheckboxComponent extends FormElementComponent<boolean> implemen
    */
   @Input()
   get value() {
-    return this.control.value;
+    return this.checkboxValue;
   }
 
   set value(value) {
-    this.control.patchValue(value, {emitEvent: false});
+    this.checkboxValue = value;
+
+    if (this.control) {
+      this.control.patchValue(value, {emitEvent: false});
+    }
     this.cdr.markForCheck();
   }
 
@@ -82,7 +88,7 @@ export class KalCheckboxComponent extends FormElementComponent<boolean> implemen
   ngOnInit() {
     this.control = new FormControl(
       {
-        value: this.value ? coerceBooleanProperty(this.value) : false,
+        value: this.checkboxValue ? coerceBooleanProperty(this.checkboxValue) : false,
         disabled: this.disabled
       }
     );

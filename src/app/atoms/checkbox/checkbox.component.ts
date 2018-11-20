@@ -20,6 +20,7 @@ export class CheckboxComponent implements OnInit {
    */
   disabled = false;
 
+  checkboxValue = true;
   /**
    * Value retrieved by checkbox output
    */
@@ -58,6 +59,10 @@ export class CheckboxComponent implements OnInit {
     } else {
       this.control.disable();
     }
+  }
+
+  changeCheckboxValue() {
+    this.checkboxValue = true;
   }
 
   /**
