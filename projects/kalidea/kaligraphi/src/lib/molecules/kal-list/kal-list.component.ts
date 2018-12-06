@@ -58,6 +58,8 @@ export class KalListSelection<T extends { id: string }> {
 
 }
 
+type KalListDataSource<T> = DataSource<T> | Observable<T[]> | T[];
+
 @Component({
   selector: 'kal-list',
   templateUrl: './kal-list.component.html',
@@ -75,7 +77,16 @@ export class KalListComponent<T extends { id: string }> implements CollectionVie
   /**
    * Datasource to give items list to the component
    */
-  @Input() dataSource: DataSource<T> | Observable<T[]> | T[];
+  @Input()
+  get dataSource(): KalListDataSource<T> {
+    return this._dataSource;
+  }
+  set dataSource(dataSource: KalListDataSource<T>) {
+    if (dataSource !== this._dataSource) {
+      this._dataSource = dataSource;
+      // this.switchDataSource(dataSource);
+    }
+  }
 
   /**
    * Triggered when selection has changed
@@ -101,6 +112,11 @@ export class KalListComponent<T extends { id: string }> implements CollectionVie
    * Selectable items (none, single, multiple)
    */
   private _selectionMode: KalListSelectionMode = KalListSelectionMode.Single;
+
+  /**
+   * The dataSource
+   */
+  private _dataSource: KalListDataSource<T>;
 
   /**
    * The config is use to group all items
@@ -339,9 +355,7 @@ export class KalListComponent<T extends { id: string }> implements CollectionVie
     }
   }
 
-  ngOnInit() {
-    this.results = [];
-
+  private observeDataSource() {
     if ((this.dataSource as DataSource<T>).connect instanceof Function) {
       this.subscription = (this.dataSource as DataSource<T>).connect(this).subscribe(
         (items: T[]) => {
@@ -350,17 +364,21 @@ export class KalListComponent<T extends { id: string }> implements CollectionVie
         }
       );
     } else if (this.dataSource instanceof Observable) {
-      this.subscription = this.dataSource.subscribe(
+      this.subscription = (this.dataSource as Observable<T[]>).subscribe(
         (items: T[]) => {
           this.results = items;
           this.cdr.markForCheck();
         }
       );
     } else if (Array.isArray(this.dataSource)) {
-      this.results = this.dataSource;
+      this.results = this.dataSource as T[];
       this.cdr.markForCheck();
     }
+  }
 
+  ngOnInit() {
+    this.results = [];
+    this.observeDataSource();
   }
 
   ngAfterViewInit() {
